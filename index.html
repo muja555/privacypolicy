@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RoomVision AI — Design Your Dream Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #FAF7F2;
+    --bg2: #F2EDE4;
+    --orange: #E87D2B;
+    --orange-light: #FFF0E0;
+    --text: #1C1410;
+    --muted: #7A6A5A;
+    --card-bg: #FFFFFF;
+    --radius: 20px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 2rem;
+    background: rgba(250,247,242,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .nav-logo-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--orange);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .nav-logo span {
+    font-family: 'Fraunces', serif;
+    font-size: 1.15rem; font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .nav-cta {
+    background: var(--text); color: #fff;
+    border: none; border-radius: 100px;
+    padding: 0.55rem 1.4rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem; font-weight: 500;
+    cursor: pointer; text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .nav-cta:hover { background: var(--orange); transform: scale(1.02); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 3rem;
+    padding: 8rem 5vw 5rem;
+    max-width: 1300px; margin: 0 auto;
+  }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--orange-light);
+    color: var(--orange);
+    border-radius: 100px;
+    padding: 0.35rem 1rem;
+    font-size: 0.8rem; font-weight: 500;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.02em;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--orange);
+    border-radius: 50%;
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.8rem, 5vw, 4.2rem);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--orange);
+  }
+
+  .hero-desc {
+    font-size: 1.05rem;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 440px;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-btns {
+    display: flex; flex-wrap: wrap; gap: 0.75rem;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--orange); color: #fff;
+    border: none; border-radius: 100px;
+    padding: 0.85rem 2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem; font-weight: 500;
+    cursor: pointer; text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: #CF6E22; transform: translateY(-2px); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent; color: var(--text);
+    border: 1.5px solid rgba(0,0,0,0.15); border-radius: 100px;
+    padding: 0.85rem 2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem; font-weight: 400;
+    cursor: pointer; text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--orange); background: var(--orange-light); }
+
+  /* ── PHONE MOCKUP ── */
+  .hero-visual {
+    display: flex; justify-content: center; align-items: center;
+    position: relative;
+  }
+  .phone-wrap {
+    position: relative;
+    animation: float 4s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+  }
+  .phone-frame {
+    width: 280px;
+    background: #1C1410;
+    border-radius: 44px;
+    padding: 12px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.1);
+  }
+  .phone-screen {
+    background: #F5F0EA;
+    border-radius: 34px;
+    overflow: hidden;
+    height: 560px;
+    display: flex; flex-direction: column;
+  }
+  .phone-notch {
+    height: 30px;
+    background: #1C1410;
+    border-radius: 0 0 18px 18px;
+    margin: 0 auto;
+    width: 100px;
+  }
+  .phone-content { padding: 16px; flex: 1; overflow: hidden; }
+  .phone-header {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 14px;
+  }
+  .phone-header-back {
+    font-size: 10px; color: #888; display: flex; align-items: center; gap: 4px;
+  }
+  .phone-header h3 {
+    font-size: 14px; font-weight: 600; color: var(--text);
+  }
+  .phone-label {
+    font-size: 9px; font-weight: 600; letter-spacing: 0.08em;
+    color: #999; text-transform: uppercase; margin-bottom: 6px;
+  }
+  .phone-room-img {
+    width: 100%; height: 130px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #C8C4BE 0%, #9A9590 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; color: #fff;
+    position: relative; overflow: hidden;
+    margin-bottom: 14px;
+  }
+  .phone-room-img::after {
+    content: 'Original Room';
+    position: absolute; bottom: 8px; left: 10px;
+    background: rgba(0,0,0,0.45); color: #fff;
+    font-size: 8px; padding: 3px 8px; border-radius: 20px;
+  }
+  .room-rubble {
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+      45deg,
+      #B8B4AE,
+      #B8B4AE 5px,
+      #A8A49E 5px,
+      #A8A49E 10px
+    );
+    opacity: 0.6;
+  }
+  .phone-styles {
+    font-size: 10px; font-weight: 600; color: var(--text);
+    margin-bottom: 8px;
+  }
+  .style-chips {
+    display: flex; gap: 6px; margin-bottom: 14px;
+  }
+  .chip {
+    padding: 5px 10px; border-radius: 20px;
+    font-size: 9px; font-weight: 500;
+    border: 1px solid rgba(0,0,0,0.12);
+    background: #fff;
+    color: #555;
+  }
+  .chip.active {
+    background: var(--orange); color: #fff; border-color: var(--orange);
+  }
+  .phone-input-wrap {
+    background: #fff; border-radius: 10px;
+    padding: 8px 10px; margin-bottom: 12px;
+    font-size: 9px; color: #aaa;
+    border: 1px solid rgba(0,0,0,0.08);
+  }
+  .phone-generate {
+    background: var(--orange); color: #fff;
+    border-radius: 12px; padding: 12px;
+    text-align: center; font-size: 10px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+
+  /* ── STATS ── */
+  .stats {
+    background: var(--text);
+    padding: 2.5rem 5vw;
+  }
+  .stats-inner {
+    max-width: 1300px; margin: 0 auto;
+    display: flex; justify-content: space-around; flex-wrap: wrap; gap: 1.5rem;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Fraunces', serif;
+    font-size: 2.2rem; font-weight: 600;
+    color: var(--orange);
+  }
+  .stat-label {
+    font-size: 0.85rem; color: rgba(255,255,255,0.55);
+    margin-top: 4px;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .section {
+    padding: 7rem 5vw;
+    max-width: 1300px; margin: 0 auto;
+  }
+  .section-tag {
+    font-size: 0.78rem; font-weight: 500; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--orange);
+    margin-bottom: 1rem;
+  }
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    font-weight: 600; line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin-bottom: 1rem;
+    max-width: 500px;
+  }
+  .section-title em { font-style: italic; color: var(--orange); }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem; margin-top: 3.5rem;
+  }
+  .step-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 2rem;
+    border: 1px solid rgba(0,0,0,0.07);
+    transition: transform 0.25s, box-shadow 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .step-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+  }
+  .step-num {
+    font-family: 'Fraunces', serif;
+    font-size: 4rem; font-weight: 300;
+    color: var(--orange-light);
+    line-height: 1;
+    margin-bottom: 1.5rem;
+    -webkit-text-stroke: 1px var(--orange);
+  }
+  .step-icon {
+    width: 44px; height: 44px;
+    background: var(--orange-light);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    margin-bottom: 1rem;
+  }
+  .step-card h3 {
+    font-size: 1.1rem; font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  .step-card p {
+    font-size: 0.9rem; color: var(--muted); line-height: 1.6;
+  }
+
+  /* ── BEFORE / AFTER ── */
+  .gallery-section {
+    background: var(--bg2);
+    padding: 7rem 5vw;
+  }
+  .gallery-inner {
+    max-width: 1300px; margin: 0 auto;
+  }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+  .gallery-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.07);
+  }
+  .gallery-card-imgs {
+    display: grid; grid-template-columns: 1fr 1fr;
+  }
+  .gallery-img-wrap {
+    aspect-ratio: 1;
+    position: relative; overflow: hidden;
+  }
+  .gallery-img-wrap img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.4s;
+  }
+  .gallery-card:hover .gallery-img-wrap img {
+    transform: scale(1.04);
+  }
+  .img-label {
+    position: absolute; bottom: 8px; left: 8px;
+    background: rgba(0,0,0,0.5); color: #fff;
+    font-size: 9px; padding: 3px 8px; border-radius: 20px;
+    font-weight: 500;
+  }
+  .arrow-badge {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    background: var(--orange); color: #fff;
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; z-index: 2;
+    box-shadow: 0 4px 12px rgba(232,125,43,0.5);
+  }
+  .gallery-card-meta {
+    padding: 1.25rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .gallery-card-meta h4 {
+    font-size: 0.95rem; font-weight: 500;
+  }
+  .style-badge {
+    background: var(--orange-light); color: var(--orange);
+    font-size: 0.75rem; font-weight: 500;
+    padding: 4px 12px; border-radius: 100px;
+  }
+
+  /* ── STYLES GRID ── */
+  .styles-section { padding: 7rem 5vw; max-width: 1300px; margin: 0 auto; }
+  .styles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem; margin-top: 3rem;
+  }
+  .style-tile {
+    border-radius: 16px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    transition: transform 0.2s;
+    cursor: default;
+  }
+  .style-tile:hover { transform: scale(1.04); }
+  .style-dots {
+    display: flex; justify-content: center; gap: 5px; margin-bottom: 0.75rem;
+  }
+  .dot {
+    width: 14px; height: 14px; border-radius: 50%;
+  }
+  .style-tile h4 { font-size: 0.9rem; font-weight: 500; margin-bottom: 4px; }
+  .style-tile p { font-size: 0.75rem; color: var(--muted); line-height: 1.5; }
+
+  /* ── CTA ── */
+  .cta-section {
+    background: var(--text);
+    padding: 8rem 5vw;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .cta-section::before {
+    content: '';
+    position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(232,125,43,0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta-section h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 600; color: #fff;
+    line-height: 1.1; letter-spacing: -0.03em;
+    margin-bottom: 1.25rem;
+  }
+  .cta-section h2 em { font-style: italic; color: var(--orange); }
+  .cta-section p {
+    color: rgba(255,255,255,0.5);
+    font-size: 1.05rem; max-width: 460px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.65;
+  }
+  .store-btns {
+    display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;
+  }
+  .store-btn {
+    display: inline-flex; align-items: center; gap: 12px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 14px; padding: 0.9rem 1.75rem;
+    color: #fff; text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .store-btn:hover { background: rgba(255,255,255,0.18); transform: translateY(-2px); }
+  .store-btn-icon { font-size: 24px; }
+  .store-btn-text { text-align: left; }
+  .store-btn-text small { display: block; font-size: 0.7rem; opacity: 0.6; }
+  .store-btn-text strong { display: block; font-size: 1rem; font-weight: 500; }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 2rem 5vw;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+    gap: 1rem;
+  }
+  footer .footer-logo {
+    font-family: 'Fraunces', serif;
+    font-size: 1rem; font-weight: 600;
+    color: var(--text);
+  }
+  footer p { font-size: 0.8rem; color: var(--muted); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; padding-top: 6rem; text-align: center; }
+    .hero-desc { margin: 0 auto 2rem; }
+    .hero-btns { justify-content: center; }
+    .hero-visual { display: none; }
+    .steps { grid-template-columns: 1fr; }
+    .gallery-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── ANIMATE ── */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-up.visible {
+    opacity: 1; transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-icon">🏠</div>
+    <span>RoomVision AI</span>
+  </div>
+  <a href="#download" class="nav-cta">Get the App</a>
+</nav>
+
+<!-- HERO -->
+<section style="background: var(--bg);">
+  <div class="hero">
+    <div>
+      <div class="hero-tag">AI-Powered Interior Design</div>
+      <h1>Turn any room into your <em>dream space</em></h1>
+      <p class="hero-desc">Upload a photo of any room — even under construction — pick a style, and watch AI transform it into a stunning, personalized interior design.</p>
+      <div class="hero-btns">
+        <a href="#download" class="btn-primary">
+          ↓ Download Free
+        </a>
+        <a href="#how" class="btn-secondary">See how it works</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="phone-wrap">
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <div class="phone-notch"></div>
+            <div class="phone-content">
+              <div class="phone-header">
+                <div class="phone-header-back">← RoomVision AI</div>
+                <div style="font-size:10px; color: #333; font-weight:600;">My Living Room</div>
+              </div>
+              <div class="phone-label">Original Room</div>
+              <div class="phone-room-img">
+                <div class="room-rubble"></div>
+              </div>
+              <div class="phone-styles">Choose a Design Style</div>
+              <div class="style-chips">
+                <div class="chip">Modern Luxury</div>
+                <div class="chip active">Warm Minimalist</div>
+                <div class="chip">Nordic</div>
+              </div>
+              <div style="font-size:9px; font-weight:600; color:#999; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:5px;">Custom Description</div>
+              <div class="phone-input-wrap">Add cozy fireplace and warm lighting...</div>
+              <div class="phone-generate">✦ Generate Design</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stats-inner">
+    <div class="stat fade-up">
+      <div class="stat-num">10+</div>
+      <div class="stat-label">Design Styles</div>
+    </div>
+    <div class="stat fade-up">
+      <div class="stat-num">30s</div>
+      <div class="stat-label">To Generate a Room</div>
+    </div>
+    <div class="stat fade-up">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">Customization Options</div>
+    </div>
+    <div class="stat fade-up">
+      <div class="stat-num">4.8★</div>
+      <div class="stat-label">App Store Rating</div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <p class="section-tag fade-up">How it works</p>
+  <h2 class="section-title fade-up">Three steps to your <em>perfect room</em></h2>
+  <div class="steps">
+    <div class="step-card fade-up">
+      <div class="step-num">01</div>
+      <div class="step-icon">📸</div>
+      <h3>Upload your room</h3>
+      <p>Take a photo of any space — an empty room, one under renovation, or one you already have. Any stage works.</p>
+    </div>
+    <div class="step-card fade-up">
+      <div class="step-num">02</div>
+      <div class="step-icon">🎨</div>
+      <h3>Choose a style</h3>
+      <p>Browse styles like Warm Minimalist, Scandinavian, Tropical Modern, Industrial, and more. Add a custom prompt to personalize further.</p>
+    </div>
+    <div class="step-card fade-up">
+      <div class="step-num">03</div>
+      <div class="step-icon">✦</div>
+      <h3>Generate & save</h3>
+      <p>AI transforms your room in seconds. Save your favorite designs and share them with your architect, family, or contractor.</p>
+    </div>
+  </div>
+</section>
+
+<!-- BEFORE / AFTER -->
+<section class="gallery-section">
+  <div class="gallery-inner">
+    <p class="section-tag fade-up">Real results</p>
+    <h2 class="section-title fade-up">See the <em>transformation</em></h2>
+    <div class="gallery-grid">
+      <div class="gallery-card fade-up">
+        <div style="position:relative;">
+          <div class="gallery-card-imgs">
+            <div class="gallery-img-wrap">
+              <div style="width:100%;height:100%;background:linear-gradient(135deg,#B0ABA4,#908B85);display:flex;align-items:center;justify-content:center;">
+                <span style="font-size:28px;">🏚️</span>
+              </div>
+              <span class="img-label">Before</span>
+            </div>
+            <div class="gallery-img-wrap">
+              <div style="width:100%;height:100%;background:linear-gradient(135deg,#E8D5B7,#C4A882);display:flex;align-items:center;justify-content:center;">
+                <span style="font-size:28px;">🛋️</span>
+              </div>
+              <span class="img-label">After</span>
+            </div>
+          </div>
+          <div class="arrow-badge" style="left:calc(50%);top:50%;">→</div>
+        </div>
+        <div class="gallery-card-meta">
+          <h4>Bedroom · 2nd floor</h4>
+          <span class="style-badge">Scandinavian Minimalist</span>
+        </div>
+      </div>
+      <div class="gallery-card fade-up">
+        <div style="position:relative;">
+          <div class="gallery-card-imgs">
+            <div class="gallery-img-wrap">
+              <div style="width:100%;height:100%;background:linear-gradient(135deg,#A8A49E,#888480);display:flex;align-items:center;justify-content:center;">
+                <span style="font-size:28px;">🔨</span>
+              </div>
+              <span class="img-label">Before</span>
+            </div>
+            <div class="gallery-img-wrap">
+              <div style="width:100%;height:100%;background:linear-gradient(135deg,#D4EAD0,#A8C9A0);display:flex;align-items:center;justify-content:center;">
+                <span style="font-size:28px;">🌿</span>
+              </div>
+              <span class="img-label">After</span>
+            </div>
+          </div>
+          <div class="arrow-badge" style="left:calc(50%);top:50%;">→</div>
+        </div>
+        <div class="gallery-card-meta">
+          <h4>Living Room</h4>
+          <span class="style-badge">Tropical Modern</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DESIGN STYLES -->
+<section class="styles-section">
+  <p class="section-tag fade-up">Design styles</p>
+  <h2 class="section-title fade-up">Every aesthetic, <em>yours to explore</em></h2>
+  <div class="styles-grid">
+    <div class="style-tile fade-up" style="background:#F5F0E8;">
+      <div class="style-dots">
+        <div class="dot" style="background:#D4B896;"></div>
+        <div class="dot" style="background:#B89878;"></div>
+        <div class="dot" style="background:#8B7355;"></div>
+      </div>
+      <h4>Warm Minimalist</h4>
+      <p>Soft earth tones, organic shapes</p>
+    </div>
+    <div class="style-tile fade-up" style="background:#EEF3EE;">
+      <div class="style-dots">
+        <div class="dot" style="background:#E8E8E0;"></div>
+        <div class="dot" style="background:#8AAE8A;"></div>
+        <div class="dot" style="background:#F5F5F0;"></div>
+      </div>
+      <h4>Scandinavian</h4>
+      <p>Light woods, white walls</p>
+    </div>
+    <div class="style-tile fade-up" style="background:#EAF0F5;">
+      <div class="style-dots">
+        <div class="dot" style="background:#2C2C2C;"></div>
+        <div class="dot" style="background:#C4A060;"></div>
+        <div class="dot" style="background:#F0EDE8;"></div>
+      </div>
+      <h4>Modern Luxury</h4>
+      <p>Sleek surfaces, premium materials</p>
+    </div>
+    <div class="style-tile fade-up" style="background:#F0EEF5;">
+      <div class="style-dots">
+        <div class="dot" style="background:#4A4470;"></div>
+        <div class="dot" style="background:#C85050;"></div>
+        <div class="dot" style="background:#D4A050;"></div>
+      </div>
+      <h4>Victorian Elegant</h4>
+      <p>Ornate details, timeless grace</p>
+    </div>
+    <div class="style-tile fade-up" style="background:#EEF5EE;">
+      <div class="style-dots">
+        <div class="dot" style="background:#4A8A4A;"></div>
+        <div class="dot" style="background:#D46C30;"></div>
+        <div class="dot" style="background:#5AA0B8;"></div>
+      </div>
+      <h4>Tropical Modern</h4>
+      <p>Lush greenery, vibrant accents</p>
+    </div>
+    <div class="style-tile fade-up" style="background:#F0F0EE;">
+      <div class="style-dots">
+        <div class="dot" style="background:#555;"></div>
+        <div class="dot" style="background:#B87040;"></div>
+        <div class="dot" style="background:#888;"></div>
+      </div>
+      <h4>Industrial Modern</h4>
+      <p>Exposed brick, metal accents</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="download">
+  <h2>Start designing <em>today</em></h2>
+  <p>Free to download. Bring your dream home to life before the first brick is laid.</p>
+  <div class="store-btns">
+    <a href="#" class="store-btn">
+      <svg class="store-btn-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+      <div class="store-btn-text">
+        <small>Download on the</small>
+        <strong>App Store</strong>
+      </div>
+    </a>
+    <a href="https://play.google.com/store/apps/details?id=app.rork.ar_room_designer_ai" class="store-btn">
+      <span class="store-btn-icon">▶</span>
+      <div class="store-btn-text">
+        <small>Get it on</small>
+        <strong>Google Play</strong>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">RoomVision AI</span>
+  <p>© 2026 RoomVision AI. All rights reserved.</p>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
