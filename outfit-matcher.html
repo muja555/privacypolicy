@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Outfit Color Matcher — Shirt · Bottom · Shoes</title>
+<meta name="description" content="Pick your skin tone and the colors of your shirts, trousers and shoes. Get every combination that actually works together, ranked by color harmony.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #FAF7F2;
+    --bg2: #F2EDE4;
+    --orange: #E87D2B;
+    --orange-light: #FFF0E0;
+    --text: #1C1410;
+    --muted: #7A6A5A;
+    --line: rgba(28,20,16,0.10);
+    --card-bg: #FFFFFF;
+    --radius: 20px;
+    --good: #2E7D53;
+    --ok: #B8862B;
+    --bad: #B4483A;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 1.25rem; }
+
+  header.hero {
+    padding: 3.5rem 0 2rem;
+    text-align: center;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--orange-light); color: #A9541A;
+    border-radius: 100px; padding: 0.35rem 0.9rem;
+    font-size: 0.78rem; font-weight: 500; letter-spacing: 0.02em;
+    margin-bottom: 1rem;
+  }
+  h1 {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: clamp(2rem, 5vw, 3.1rem);
+    letter-spacing: -0.03em; line-height: 1.08;
+  }
+  h1 em { font-style: italic; color: var(--orange); }
+  .sub { color: var(--muted); max-width: 44rem; margin: 0.9rem auto 0; font-size: 1.02rem; }
+
+  .layout {
+    display: grid; grid-template-columns: minmax(0, 400px) minmax(0, 1fr);
+    gap: 1.5rem; align-items: start; padding-bottom: 4rem;
+  }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    box-shadow: 0 1px 2px rgba(28,20,16,0.04);
+  }
+  .panel { position: sticky; top: 1rem; max-height: calc(100vh - 2rem); overflow-y: auto; }
+  @media (max-width: 900px) { .panel { position: static; max-height: none; } }
+
+  .step { border-top: 1px solid var(--line); padding-top: 1.1rem; margin-top: 1.1rem; }
+  .step:first-of-type { border-top: 0; padding-top: 0; margin-top: 0; }
+  .step-head { display: flex; align-items: center; gap: 10px; margin-bottom: 0.75rem; }
+  .step-num {
+    width: 24px; height: 24px; flex: none; border-radius: 8px;
+    background: var(--text); color: #fff;
+    font-size: 0.72rem; font-weight: 700;
+    display: grid; place-items: center;
+  }
+  .step-title { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.05rem; letter-spacing: -0.01em; }
+  .step-note { font-size: 0.78rem; color: var(--muted); margin-left: auto; }
+
+  label.field { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 0.35rem; }
+
+  .picker-row { display: flex; gap: 0.6rem; align-items: center; }
+  input[type="color"] {
+    -webkit-appearance: none; appearance: none;
+    width: 54px; height: 42px; flex: none;
+    border: 1px solid var(--line); border-radius: 12px;
+    background: none; cursor: pointer; padding: 0;
+  }
+  input[type="color"]::-webkit-color-swatch-wrapper { padding: 4px; }
+  input[type="color"]::-webkit-color-swatch { border: none; border-radius: 8px; }
+  input[type="color"]::-moz-color-swatch { border: none; border-radius: 8px; }
+
+  .hexbox {
+    flex: 1; min-width: 0; height: 42px;
+    border: 1px solid var(--line); border-radius: 12px;
+    padding: 0 0.75rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    background: var(--bg); color: var(--text);
+  }
+  .hexbox:focus { outline: 2px solid var(--orange); outline-offset: 1px; }
+
+  button {
+    font-family: 'DM Sans', sans-serif; cursor: pointer;
+    border: none; border-radius: 12px;
+  }
+  .btn-add {
+    height: 42px; padding: 0 1rem; flex: none;
+    background: var(--text); color: #fff; font-weight: 500; font-size: 0.88rem;
+  }
+  .btn-add:hover { background: #34251C; }
+  .btn-primary {
+    width: 100%; height: 50px; margin-top: 1.25rem;
+    background: var(--orange); color: #fff;
+    font-size: 1rem; font-weight: 500; border-radius: 100px;
+    box-shadow: 0 6px 18px rgba(232,125,43,0.28);
+  }
+  .btn-primary:hover { background: #D96F1F; }
+  .btn-primary:disabled { background: #D9D0C4; box-shadow: none; cursor: not-allowed; }
+  .btn-ghost {
+    background: transparent; color: var(--muted);
+    border: 1px solid var(--line); padding: 0.4rem 0.85rem; font-size: 0.8rem;
+  }
+  .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
+
+  .seg { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .seg button {
+    padding: 0.45rem 0.85rem; font-size: 0.83rem;
+    background: var(--bg2); color: var(--muted); border: 1px solid transparent;
+  }
+  .seg button[aria-pressed="true"] { background: var(--text); color: #fff; }
+
+  .presets { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.6rem; }
+  .preset-dot {
+    width: 24px; height: 24px; border-radius: 8px; padding: 0;
+    border: 1px solid rgba(0,0,0,0.12);
+  }
+  .preset-dot:hover { transform: scale(1.12); }
+  .preset-label { font-size: 0.72rem; color: var(--muted); width: 100%; margin-bottom: -2px; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    border: 1px solid var(--line); border-radius: 100px;
+    padding: 0.28rem 0.35rem 0.28rem 0.35rem;
+    font-size: 0.8rem; background: #fff;
+  }
+  .chip .sw { width: 20px; height: 20px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.12); flex: none; }
+  .chip .nm { color: var(--text); }
+  .chip .x {
+    background: none; color: var(--muted); font-size: 1rem; line-height: 1;
+    padding: 0 4px; border-radius: 50%;
+  }
+  .chip .x:hover { color: var(--bad); }
+  .empty { font-size: 0.82rem; color: var(--muted); font-style: italic; margin-top: 0.6rem; }
+
+  .results-head {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  .results-head h2 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.4rem; letter-spacing: -0.02em; }
+  .count-pill {
+    background: var(--bg2); border-radius: 100px; padding: 0.25rem 0.7rem;
+    font-size: 0.8rem; color: var(--muted);
+  }
+  /* category sections */
+  .cat { margin-bottom: 2.1rem; }
+  .cat:last-child { margin-bottom: 0; }
+  .cat-head {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding-bottom: 0.5rem; margin-bottom: 0.9rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .cat-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+  .cat-head h3 {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: 1.05rem; letter-spacing: -0.01em;
+  }
+  .cat-n {
+    font-size: 0.76rem; color: var(--muted);
+    background: var(--bg2); border-radius: 100px; padding: 0.15rem 0.55rem;
+  }
+  .cat-sub { font-size: 0.8rem; color: var(--muted); margin: -0.45rem 0 0.9rem; }
+  .cat-more { text-align: center; margin-top: 1rem; }
+  .cat-empty {
+    font-size: 0.82rem; color: var(--muted); font-style: italic;
+    background: var(--bg2); border-radius: 12px; padding: 0.8rem 1rem;
+  }
+
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+    gap: 1rem;
+  }
+  .combo {
+    background: var(--card-bg); border: 1px solid var(--line);
+    border-radius: 18px; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .combo:hover { border-color: rgba(232,125,43,0.5); }
+  .combo-fig { background: var(--bg2); display: grid; place-items: center; padding: 0.75rem 0 0.25rem; }
+  .combo-fig svg { width: 116px; height: 212px; display: block; }
+  .combo-body { padding: 0.75rem 0.85rem 0.9rem; }
+  .score-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+  .score {
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.15rem;
+  }
+  .score-of { font-size: 0.72rem; color: var(--muted); }
+  .swrow { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 0.55rem; }
+  .swline { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; }
+  .swline .sw { width: 16px; height: 16px; border-radius: 5px; border: 1px solid rgba(0,0,0,0.12); flex: none; }
+  .swline .role { color: var(--muted); width: 46px; flex: none; }
+  .swline .nm { color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tag {
+    font-size: 0.68rem; background: var(--bg2); color: var(--muted);
+    border-radius: 6px; padding: 0.1rem 0.4rem;
+  }
+  .tag.neg { background: #F7E6E3; color: var(--bad); }
+
+  .placeholder {
+    text-align: center; padding: 3.5rem 1.5rem; color: var(--muted);
+  }
+  .placeholder .big { font-size: 2.2rem; margin-bottom: 0.5rem; }
+
+  footer {
+    border-top: 1px solid var(--line); padding: 1.5rem 0 3rem;
+    font-size: 0.8rem; color: var(--muted); text-align: center;
+  }
+  footer a { color: var(--muted); }
+  .savebar {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.75rem; color: var(--muted); margin-top: 0.75rem;
+  }
+  .dot-live { width: 7px; height: 7px; border-radius: 50%; background: var(--good); flex: none; }
+  .field-row { display: flex; align-items: baseline; gap: 0.5rem; }
+  .field-row .field { flex: 1; }
+  .toggle {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    padding: 0.22rem 0.6rem; border: 1px solid var(--line); border-radius: 999px;
+    background: var(--card-bg); color: var(--muted); cursor: pointer;
+    font: inherit; font-size: 0.72rem; white-space: nowrap;
+  }
+  .toggle:hover { border-color: var(--muted); }
+  .toggle .toggle-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--muted); flex: none;
+  }
+  .toggle[aria-pressed="true"] { color: var(--text); }
+  .toggle[aria-pressed="true"] .toggle-dot { background: var(--good); }
+  .skin-body { transition: opacity 0.15s; }
+  .skin-body.off { opacity: 0.4; }
+  .transfer { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.6rem; }
+  .transfer-box { flex: 1 0 100%; display: block; margin-top: 0.35rem; }
+  .transfer-box > span { display: block; font-size: 0.75rem; color: var(--muted); margin-bottom: 0.3rem; }
+  .transfer-box textarea {
+    width: 100%; box-sizing: border-box; resize: vertical;
+    font: 0.72rem/1.45 ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: var(--text); background: var(--card-bg);
+    border: 1px solid var(--line); border-radius: 10px; padding: 0.5rem 0.6rem;
+  }
+  .transfer-box textarea:focus { outline: none; border-color: var(--muted); }
+  .transfer-actions { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.4rem; }
+  .btn-sm { width: auto; padding: 0.4rem 0.9rem; font-size: 0.8rem; margin: 0; }
+  #transferMsg { font-size: 0.75rem; color: var(--muted); }
+  #transferMsg.bad { color: var(--bad); }
+  #transferMsg.ok  { color: var(--good); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow">👕 Color harmony, no guesswork</div>
+    <h1>What actually <em>goes together</em><br>in your wardrobe</h1>
+    <p class="sub">Add the color of every shirt, every pair of trousers and every pair of shoes you own. We build every possible outfit, score it against real color-theory rules and your own skin tone, and rank the winners.</p>
+  </header>
+
+  <div class="layout">
+
+    <!-- ───────── LEFT: INPUT PANEL ───────── -->
+    <form class="card panel" id="panel" autocomplete="off">
+
+      <!-- STEP 1 -->
+      <section class="step">
+        <div class="step-head">
+          <div class="step-num">1</div>
+          <div class="step-title">You</div>
+        </div>
+
+        <div class="field-row">
+          <label class="field" for="skin">Skin tone</label>
+          <button type="button" class="toggle" id="skinToggle" aria-pressed="true">
+            <span class="toggle-dot"></span><span id="skinToggleLabel">Using skin tone</span>
+          </button>
+        </div>
+        <div class="skin-body" id="skinBody">
+          <div class="picker-row">
+            <input type="color" id="skin" value="#C68642" aria-label="Skin tone color picker">
+            <input type="text" class="hexbox" id="skinHex" value="#C68642" maxlength="7" spellcheck="false" aria-label="Skin tone hex value">
+          </div>
+          <div class="presets" id="skinPresets">
+            <span class="preset-label">Quick picks</span>
+          </div>
+        </div>
+        <div class="step-note" id="skinRead" style="margin:0.55rem 0 0"></div>
+
+        <label class="field" for="genderSeg" style="margin-top:1rem">Gender <span style="opacity:.7">— sets the preview figure &amp; fit rules</span></label>
+        <div class="seg" id="genderSeg">
+          <button type="button" data-v="female" aria-pressed="false">Female</button>
+          <button type="button" data-v="male" aria-pressed="false">Male</button>
+          <button type="button" data-v="nonbinary" aria-pressed="false">Non-binary</button>
+          <button type="button" data-v="unspecified" aria-pressed="true">Rather not say</button>
+        </div>
+      </section>
+
+      <!-- STEP 2/3/4 rendered by JS -->
+      <div id="listSteps"></div>
+
+      <button type="submit" class="btn-primary" id="submitBtn">Generate outfit combos</button>
+
+      <div class="savebar">
+        <span class="dot-live"></span>
+        <span id="saveMsg">Saved in this browser</span>
+        <button type="button" class="btn-ghost" id="resetBtn" style="margin-left:auto">Reset all</button>
+      </div>
+
+      <div class="transfer">
+        <button type="button" class="btn-ghost" id="copyBtn">Copy setup as JSON</button>
+        <button type="button" class="btn-ghost" id="restoreBtn">Restore from JSON</button>
+        <label class="transfer-box" id="transferBox" hidden>
+          <span id="transferLabel">Paste the JSON you copied from your other machine:</span>
+          <textarea id="transferText" rows="4" spellcheck="false"
+                    placeholder='{"skin":"#C68642", ...}'></textarea>
+          <div class="transfer-actions">
+            <button type="button" class="btn-primary btn-sm" id="applyJsonBtn">Restore</button>
+            <button type="button" class="btn-ghost" id="closeJsonBtn">Cancel</button>
+            <span id="transferMsg"></span>
+          </div>
+        </label>
+      </div>
+    </form>
+
+    <!-- ───────── RIGHT: RESULTS ───────── -->
+    <main>
+      <div class="results-head">
+        <h2>Outfits</h2>
+        <span class="count-pill" id="countPill">not generated yet</span>
+      </div>
+
+      <div class="card placeholder" id="placeholder">
+        <div class="big">🎨</div>
+        <p>Add at least one shirt, one bottom and one pair of shoes,<br>then hit <strong>Generate outfit combos</strong>.</p>
+      </div>
+
+      <div id="results"></div>
+    </main>
+  </div>
+
+  <footer>
+    Everything you enter stays in your browser as a cookie — nothing is uploaded.
+    <a href="privacy-policy.html">Privacy policy</a>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ══════════════════════════════════════════════════════════
+     1. STORAGE
+        localStorage is the primary store: it is the only one that
+        survives a reload when the page is opened straight from disk
+        (file:// — Chrome silently throws away document.cookie there).
+        Cookies stay as a fallback for locked-down/private modes.
+     ══════════════════════════════════════════════════════════ */
+  var STORE_KEY  = "mojapps_outfit_v1";
+  var COOKIE_DAYS = 365;
+
+  function lsAvailable() {
+    try {
+      localStorage.setItem(STORE_KEY + "__probe", "1");
+      localStorage.removeItem(STORE_KEY + "__probe");
+      return true;
+    } catch (e) { return false; }
+  }
+
+  function setCookie(name, value) {
+    var v = encodeURIComponent(value);
+    // Browsers cap a cookie at ~4KB. Guard so we never silently lose data.
+    if (v.length > 3800) return false;
+    document.cookie = name + "=" + v + "; max-age=" + (COOKIE_DAYS * 86400) +
+                      "; path=/; SameSite=Lax";
+    // On file:// the write is dropped without an error — verify it stuck.
+    return getCookie(name) === value;
+  }
+  function getCookie(name) {
+    var parts = document.cookie ? document.cookie.split("; ") : [];
+    for (var i = 0; i < parts.length; i++) {
+      var eq = parts[i].indexOf("=");
+      if (parts[i].slice(0, eq) === name) return decodeURIComponent(parts[i].slice(eq + 1));
+    }
+    return null;
+  }
+
+  // Returns "local" | "cookie" | null(failed)
+  function writeStore(str) {
+    if (lsAvailable()) {
+      try { localStorage.setItem(STORE_KEY, str); return "local"; } catch (e) { /* quota */ }
+    }
+    return setCookie(STORE_KEY, str) ? "cookie" : null;
+  }
+  function readStore() {
+    try {
+      var v = localStorage.getItem(STORE_KEY);
+      if (v) return v;
+    } catch (e) { /* blocked */ }
+    return getCookie(STORE_KEY);
+  }
+  function clearStore() {
+    try { localStorage.removeItem(STORE_KEY); } catch (e) { /* blocked */ }
+    document.cookie = STORE_KEY + "=; max-age=0; path=/; SameSite=Lax";
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     2. STATE
+     ══════════════════════════════════════════════════════════ */
+  var state = {
+    skin: "#C68642",
+    skinOn: true,          // false → skin tone is ignored by the scorer entirely
+    gender: "unspecified",
+    shirts: [],
+    bottoms: [],
+    shoes: []
+  };
+
+  // Shown in the preview when skin tone is excluded, so the figure reads as a
+  // mannequin rather than as somebody with grey skin.
+  var MANNEQUIN = "#BFB6AC";
+
+  function setSaveMsg(text, bad) {
+    var msg = document.getElementById("saveMsg");
+    if (!msg) return;
+    msg.textContent = text;
+    msg.previousElementSibling.style.background = bad ? "var(--bad)" : "var(--good)";
+  }
+
+  function save() {
+    var where = writeStore(JSON.stringify(state));
+    if (where === "local")       setSaveMsg("Saved in this browser", false);
+    else if (where === "cookie") setSaveMsg("Saved to this browser's cookies", false);
+    else                         setSaveMsg("Couldn't save — storage is blocked", true);
+  }
+
+  // Copies a plain object into state, ignoring anything malformed.
+  // Returns true when at least one field was usable.
+  function adopt(d) {
+    if (typeof d !== "object" || !d) return false;
+    var got = false;
+    if (isHex(d.skin)) { state.skin = d.skin.toUpperCase(); got = true; }
+    if (typeof d.skinOn === "boolean") { state.skinOn = d.skinOn; got = true; }
+    if (typeof d.gender === "string" &&
+        ["female", "male", "nonbinary", "unspecified"].indexOf(d.gender) >= 0) {
+      state.gender = d.gender; got = true;
+    }
+    ["shirts", "bottoms", "shoes"].forEach(function (k) {
+      if (Array.isArray(d[k])) {
+        state[k] = d[k].filter(isHex).map(function (h) { return h.toUpperCase(); }).slice(0, 40);
+        got = true;
+      }
+    });
+    return got;
+  }
+
+  function load() {
+    var raw = readStore();
+    if (!raw) return;
+    try { adopt(JSON.parse(raw)); }
+    catch (e) { /* corrupt payload — start fresh */ }
+  }
+
+  function isHex(v) { return typeof v === "string" && /^#[0-9a-fA-F]{6}$/.test(v); }
+
+  /* ══════════════════════════════════════════════════════════
+     3. COLOR MATH  (sRGB → linear → OKLab → OKLCh)
+        OKLCh gives perceptually even Lightness / Chroma / hue,
+        which is what makes the harmony rules below trustworthy.
+     ══════════════════════════════════════════════════════════ */
+  function hexToRgb(hex) {
+    return {
+      r: parseInt(hex.slice(1, 3), 16) / 255,
+      g: parseInt(hex.slice(3, 5), 16) / 255,
+      b: parseInt(hex.slice(5, 7), 16) / 255
+    };
+  }
+  function toLinear(c) {
+    return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  }
+  function oklch(hex) {
+    var s = hexToRgb(hex);
+    var r = toLinear(s.r), g = toLinear(s.g), b = toLinear(s.b);
+    var l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
+    var m = 0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b;
+    var q = 0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b;
+    var l_ = Math.cbrt(l), m_ = Math.cbrt(m), q_ = Math.cbrt(q);
+    var L = 0.2104542553 * l_ + 0.7936177850 * m_ - 0.0040720468 * q_;
+    var A = 1.9779984951 * l_ - 2.4285922050 * m_ + 0.4505937099 * q_;
+    var B = 0.0259040371 * l_ + 0.7827717662 * m_ - 0.8086757660 * q_;
+    var C = Math.sqrt(A * A + B * B);
+    var h = Math.atan2(B, A) * 180 / Math.PI;
+    if (h < 0) h += 360;
+    return { hex: hex, L: L, C: C, h: h };
+  }
+  function hueDist(a, b) {
+    var d = Math.abs(a - b) % 360;
+    return d > 180 ? 360 - d : d;
+  }
+  var NEUTRAL = 0.045;   // below this chroma a color behaves like a neutral
+  var LOUD    = 0.125;   // above this it is a statement color
+  function isNeutral(c) { return c.C < NEUTRAL; }
+  function isLoud(c)    { return c.C > LOUD; }
+
+  /* ── human-readable color names ── */
+  var NAMES = [
+    ["White","#FFFFFF"],["Cream","#F5EFE1"],["Ivory","#EFE7D8"],["Light grey","#D6D6D6"],
+    ["Grey","#9A9A9A"],["Charcoal","#3C3C3C"],["Black","#111111"],["Navy","#1B2A4A"],
+    ["Royal blue","#2A4FD1"],["Cobalt","#1F63C7"],["Sky blue","#8FC4E8"],["Denim","#4A6D91"],
+    ["Light denim","#8FA9C4"],["Teal","#1F7A78"],["Turquoise","#3FBFB0"],["Mint","#B6E3CE"],
+    ["Green","#2F8B4B"],["Forest green","#22503A"],["Olive","#6B6B34"],["Sage","#A8B79A"],
+    ["Lime","#A8D24A"],["Yellow","#F2CE39"],["Mustard","#C9A227"],["Gold","#C9A24B"],
+    ["Orange","#E8762B"],["Rust","#A84B2A"],["Terracotta","#C36A4C"],["Coral","#F08A72"],
+    ["Salmon","#F0A493"],["Blush pink","#F0C7C7"],["Pink","#E86FA0"],["Magenta","#C0348B"],
+    ["Purple","#6B3FA0"],["Lavender","#BFAFDD"],["Plum","#5E2B4C"],["Maroon","#6B2233"],
+    ["Burgundy","#7A1F35"],["Red","#C62B2B"],["Brick","#9B3B2E"],["Brown","#6B4A2F"],
+    ["Chocolate","#4A3222"],["Tan","#C69C6D"],["Camel","#C0955F"],["Beige","#E0D3BC"],
+    ["Khaki","#BFAE86"],["Taupe","#8C7B6B"],["Stone","#B8AEA0"]
+  ].map(function (n) { return { name: n[0], c: oklch(n[1]) }; });
+
+  function colorName(c) {
+    var best = null, bestD = Infinity;
+    for (var i = 0; i < NAMES.length; i++) {
+      var t = NAMES[i].c;
+      // weighted perceptual distance; hue matters less when either is near-grey
+      var dL = (c.L - t.L) * 1.6;
+      var dC = (c.C - t.C) * 1.4;
+      var chromaWeight = Math.min(c.C, t.C) * 4.5;
+      var dH = (hueDist(c.h, t.h) / 180) * chromaWeight;
+      var d = dL * dL + dC * dC + dH * dH;
+      if (d < bestD) { bestD = d; best = NAMES[i].name; }
+    }
+    return best;
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     4. THE SCORING ENGINE
+        No AI needed — outfit color matching is a solved,
+        deterministic problem once you work in a perceptual space.
+     ══════════════════════════════════════════════════════════ */
+
+  function skinProfile(skinHex) {
+    var s = oklch(skinHex);
+    // Measured against real skin swatches in OKLCh: golden/olive tones land
+    // around 55–66°, pink/red-leaning tones drop to 33–46°.
+    var undertone = s.h > 57 ? "warm" : (s.h < 47 ? "cool" : "neutral");
+    var depth = s.L > 0.86 ? "fair" : s.L > 0.74 ? "light" : s.L > 0.55 ? "medium" : "deep";
+    return { c: s, undertone: undertone, depth: depth };
+  }
+
+  function isWarmHue(h) { return h < 110 || h > 340; }
+  function isCoolHue(h) { return h >= 150 && h <= 320; }
+
+  function scoreCombo(shirt, bottom, shoe, skin, gender) {
+    var pts = 62;                 // neutral starting point
+    var tags = [];
+    function add(n, label, neg) {
+      pts += n;
+      if (label) tags.push({ t: label, neg: !!neg });
+    }
+
+    /* ── A. shirt vs bottom: the load-bearing relationship ── */
+    var dL = Math.abs(shirt.L - bottom.L);
+    var dh = hueDist(shirt.h, bottom.h);
+    var neutralPair = isNeutral(shirt) || isNeutral(bottom);
+
+    if (neutralPair) {
+      add(9, "neutral anchor");
+    } else if (dh < 18) {
+      if (dL > 0.18) add(11, "tonal / monochrome");
+      else add(-14, "same hue, same depth — muddy", true);
+    } else if (dh < 45) {
+      add(8, "analogous");
+    } else if (dh < 95) {
+      add(-15, "hues fight each other", true);
+    } else if (dh < 135) {
+      add(3, "triadic");
+    } else {
+      if (isLoud(shirt) && isLoud(bottom)) add(-9, "complementary but both loud", true);
+      else add(10, "complementary");
+    }
+
+    /* ── B. light/dark separation ── */
+    if (dL < 0.06) {
+      if (dh < 18) add(4, "head-to-toe tonal");
+      else add(-7, "no light/dark contrast", true);
+    } else if (dL < 0.15) {
+      add(-11, "almost-but-not-quite match", true);
+    } else if (dL < 0.55) {
+      add(11, "clean contrast");
+    } else {
+      add(6, "high contrast");
+    }
+
+    /* ── C. chroma budget: one hero piece, not three ── */
+    var loudCount = [shirt, bottom, shoe].filter(isLoud).length;
+    if (loudCount >= 3) add(-26, "three statement colors", true);
+    else if (loudCount === 2) add(-7, "two statement colors", true);
+    else if (loudCount === 1) add(8, "single hero color");
+    else add(4, "all-muted palette");
+
+    /* ── D. shoes: they anchor, they don't compete ── */
+    if (isNeutral(shoe)) {
+      if (shoe.L > 0.85) add(9, "white sneaker rule");
+      else if (shoe.L < 0.35) add(10, "dark shoes anchor the look");
+      else add(6, "neutral shoes");
+    } else {
+      var leather = shoe.h > 30 && shoe.h < 85 && shoe.L > 0.28 && shoe.L < 0.62 && shoe.C < 0.11;
+      if (leather) add(9, "leather brown/tan");
+      else if (hueDist(shoe.h, bottom.h) < 25) add(5, "shoes echo the bottoms");
+      else if (hueDist(shoe.h, shirt.h) < 25) add(6, "shoes echo the shirt");
+      else if (isLoud(shoe)) add(-13, "loud shoes clash", true);
+      else add(-3, "odd shoe color", true);
+    }
+    if (shoe.L > bottom.L + 0.25 && !isNeutral(shoe)) add(-8, "shoes too bright for the trousers", true);
+
+    /* ── E. shirt vs skin: it sits next to your face ──
+       Skipped entirely when skin is null, i.e. the user excluded their skin
+       tone. Everything above is judged on the clothes alone, so the combos
+       still rank against each other the same way. */
+    if (skin) {
+      var sk = skin.c;
+      var faceContrast = Math.abs(shirt.L - sk.L);
+      // Wash-out only happens when the shirt shares your skin's hue family AND
+      // its lightness. A blue shirt at a similar lightness is not a problem.
+      var skinFamily = hueDist(shirt.h, sk.h) < 40 && !isNeutral(shirt);
+      if (skinFamily && faceContrast < 0.14) {
+        add(-16, "washes out your face", true);
+      } else if (faceContrast < 0.08) {
+        add(-8, "low contrast with your skin", true);
+      } else {
+        add(7, "flatters your skin tone");
+      }
+      if (!isNeutral(shirt)) {
+        if (skin.undertone === "warm" && isWarmHue(shirt.h)) add(6, "warm on warm undertone");
+        else if (skin.undertone === "cool" && isCoolHue(shirt.h)) add(6, "cool on cool undertone");
+        else if (skin.undertone !== "neutral" &&
+                 ((skin.undertone === "warm" && isCoolHue(shirt.h)) ||
+                  (skin.undertone === "cool" && isWarmHue(shirt.h)))) {
+          add(-4, "fights your undertone", true);
+        }
+      }
+      // Deep skin + very dark shirt, or fair skin + very pale shirt, loses definition.
+      if (skin.depth === "deep" && shirt.L < 0.28) add(-5, "dark on dark", true);
+      if (skin.depth === "fair" && shirt.L > 0.90) add(-5, "pale on pale", true);
+    }
+
+    /* ── F. gendered fit conventions (light touch) ── */
+    if (gender === "male" && isLoud(bottom)) add(-4, "bold trousers are a risk", true);
+    if (gender === "female" && loudCount === 1 && isLoud(shirt)) add(3, "statement top");
+
+    // The raw total runs roughly 20–115. Hard-clamping it to 100 made a quarter
+    // of all combos tie at exactly 100, which destroys the ranking. A logistic
+    // curve spreads them across 0–95 instead, so "best" is genuinely one outfit.
+    var SQUASH_CENTER = 82, SQUASH_SPREAD = 13;
+    pts = Math.round(100 / (1 + Math.exp(-(pts - SQUASH_CENTER) / SQUASH_SPREAD)));
+
+    // keep the 5 most meaningful tags
+    tags.sort(function (a, b) { return (b.neg ? 1 : 0) - (a.neg ? 1 : 0); });
+    return { score: pts, tags: tags.slice(0, 5) };
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     5. FIGURE PREVIEW (SVG)
+     ══════════════════════════════════════════════════════════ */
+  function figure(skin, shirt, bottom, shoe, gender) {
+    var narrow = gender === "female";
+    var bx = narrow ? 37 : 34, bw = narrow ? 46 : 52;
+    var hair = "#3A2C22";
+    var st = 'stroke="rgba(0,0,0,0.13)" stroke-width="1"';
+    var longHair = (gender === "female")
+      ? '<rect x="41" y="24" width="7" height="30" rx="3.5" fill="' + hair + '"/>' +
+        '<rect x="72" y="24" width="7" height="30" rx="3.5" fill="' + hair + '"/>'
+      : "";
+    return '' +
+      '<svg viewBox="0 0 120 212" xmlns="http://www.w3.org/2000/svg" role="img">' +
+        longHair +
+        '<path d="M45 30 A15 15 0 0 1 75 30 L75 26 Q60 13 45 26 Z" fill="' + hair + '"/>' +
+        '<rect x="54" y="40" width="12" height="12" rx="4" fill="' + skin + '" ' + st + '/>' +
+        '<circle cx="60" cy="30" r="15" fill="' + skin + '" ' + st + '/>' +
+        // sleeves
+        '<rect x="' + (bx - 10) + '" y="48" width="12" height="36" rx="6" fill="' + shirt + '" ' + st + '/>' +
+        '<rect x="' + (bx + bw - 2) + '" y="48" width="12" height="36" rx="6" fill="' + shirt + '" ' + st + '/>' +
+        // forearms + hands
+        '<rect x="' + (bx - 8) + '" y="82" width="8" height="24" rx="4" fill="' + skin + '" ' + st + '/>' +
+        '<rect x="' + (bx + bw) + '" y="82" width="8" height="24" rx="4" fill="' + skin + '" ' + st + '/>' +
+        // torso
+        '<rect x="' + bx + '" y="46" width="' + bw + '" height="68" rx="11" fill="' + shirt + '" ' + st + '/>' +
+        // hips + legs
+        '<rect x="' + (bx + 1) + '" y="110" width="' + (bw - 2) + '" height="22" rx="5" fill="' + bottom + '" ' + st + '/>' +
+        '<rect x="' + (bx + 2) + '" y="126" width="' + (bw / 2 - 4) + '" height="58" rx="5" fill="' + bottom + '" ' + st + '/>' +
+        '<rect x="' + (bx + bw / 2 + 2) + '" y="126" width="' + (bw / 2 - 4) + '" height="58" rx="5" fill="' + bottom + '" ' + st + '/>' +
+        // shoes
+        '<rect x="' + (bx - 2) + '" y="180" width="' + (bw / 2 + 1) + '" height="13" rx="6" fill="' + shoe + '" ' + st + '/>' +
+        '<rect x="' + (bx + bw / 2 + 1) + '" y="180" width="' + (bw / 2 + 1) + '" height="13" rx="6" fill="' + shoe + '" ' + st + '/>' +
+      '</svg>';
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     6. UI WIRING
+     ══════════════════════════════════════════════════════════ */
+  var LISTS = [
+    { key: "shirts",  num: 2, title: "Shirts & tops",       one: "shirt",  def: "#F2F2F2",
+      presets: ["#FFFFFF","#111111","#1B2A4A","#8FC4E8","#C62B2B","#2F8B4B","#F0C7C7","#C9A227","#E0D3BC","#6B3FA0"] },
+    { key: "bottoms", num: 3, title: "Trousers & jeans",    one: "bottom", def: "#4A6D91",
+      presets: ["#4A6D91","#1B2A4A","#111111","#3C3C3C","#BFAE86","#6B6B34","#8FA9C4","#E0D3BC","#6B4A2F","#FFFFFF"] },
+    { key: "shoes",   num: 4, title: "Shoes",               one: "pair",   def: "#4A3222",
+      presets: ["#FFFFFF","#111111","#6B4A2F","#4A3222","#C69C6D","#9A9A9A","#1B2A4A","#7A1F35","#E0D3BC","#3C3C3C"] }
+  ];
+
+  var SKIN_PRESETS = ["#F7E0CE","#F1D2B8","#E5B894","#D19E6E","#C68642","#A9683C","#8D5524","#6B3F1D","#4A2A13","#331B0C"];
+
+  var el = {
+    skin: document.getElementById("skin"),
+    skinHex: document.getElementById("skinHex"),
+    skinPresets: document.getElementById("skinPresets"),
+    skinRead: document.getElementById("skinRead"),
+    skinToggle: document.getElementById("skinToggle"),
+    skinToggleLabel: document.getElementById("skinToggleLabel"),
+    skinBody: document.getElementById("skinBody"),
+    genderSeg: document.getElementById("genderSeg"),
+    listSteps: document.getElementById("listSteps"),
+    submitBtn: document.getElementById("submitBtn"),
+    resetBtn: document.getElementById("resetBtn"),
+    panel: document.getElementById("panel"),
+    results: document.getElementById("results"),
+    placeholder: document.getElementById("placeholder"),
+    countPill: document.getElementById("countPill")
+  };
+
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (m) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[m]; }); }
+
+  /* ── build the three list steps ── */
+  function buildSteps() {
+    el.listSteps.innerHTML = LISTS.map(function (L) {
+      return '' +
+      '<section class="step" data-key="' + L.key + '">' +
+        '<div class="step-head">' +
+          '<div class="step-num">' + L.num + '</div>' +
+          '<div class="step-title">' + L.title + '</div>' +
+          '<div class="step-note" data-count></div>' +
+        '</div>' +
+        '<div class="picker-row">' +
+          '<input type="color" value="' + L.def + '" data-pick aria-label="Pick a ' + L.one + ' color">' +
+          '<input type="text" class="hexbox" value="' + L.def + '" maxlength="7" spellcheck="false" data-hex aria-label="Hex value">' +
+          '<button type="button" class="btn-add" data-add>Add</button>' +
+        '</div>' +
+        '<div class="presets" data-presets>' +
+          L.presets.map(function (p) {
+            return '<button type="button" class="preset-dot" style="background:' + p + '" data-preset="' + p + '" title="' + p + '"></button>';
+          }).join("") +
+        '</div>' +
+        '<div class="chips" data-chips></div>' +
+        '<div class="empty" data-empty>No ' + L.key + ' added yet.</div>' +
+      '</section>';
+    }).join("");
+
+    LISTS.forEach(function (L) {
+      var sec = el.listSteps.querySelector('[data-key="' + L.key + '"]');
+      var pick = sec.querySelector("[data-pick]");
+      var hex = sec.querySelector("[data-hex]");
+
+      pick.addEventListener("input", function () { hex.value = pick.value.toUpperCase(); });
+      hex.addEventListener("change", function () {
+        var v = normalizeHex(hex.value);
+        if (v) { pick.value = v; hex.value = v; } else { hex.value = pick.value.toUpperCase(); }
+      });
+      sec.querySelector("[data-add]").addEventListener("click", function () {
+        addColor(L.key, pick.value);
+      });
+      sec.querySelectorAll("[data-preset]").forEach(function (b) {
+        b.addEventListener("click", function () { addColor(L.key, b.dataset.preset); });
+      });
+      sec.querySelector("[data-chips]").addEventListener("click", function (e) {
+        var x = e.target.closest("[data-del]");
+        if (!x) return;
+        state[L.key].splice(parseInt(x.dataset.del, 10), 1);
+        save(); renderChips(); syncSubmit();
+      });
+    });
+  }
+
+  function normalizeHex(v) {
+    v = String(v).trim();
+    if (v[0] !== "#") v = "#" + v;
+    if (/^#[0-9a-fA-F]{3}$/.test(v)) {
+      v = "#" + v[1] + v[1] + v[2] + v[2] + v[3] + v[3];
+    }
+    return /^#[0-9a-fA-F]{6}$/.test(v) ? v.toUpperCase() : null;
+  }
+
+  function addColor(key, hex) {
+    var v = normalizeHex(hex);
+    if (!v) return;
+    if (state[key].indexOf(v) !== -1) { flashDuplicate(key, v); return; }
+    if (state[key].length >= 40) return;
+    state[key].push(v);
+    save(); renderChips(); syncSubmit();
+  }
+
+  function flashDuplicate(key, v) {
+    var sec = el.listSteps.querySelector('[data-key="' + key + '"]');
+    var chips = sec.querySelectorAll(".chip");
+    var idx = state[key].indexOf(v);
+    if (chips[idx]) {
+      chips[idx].style.transition = "transform .15s";
+      chips[idx].style.transform = "scale(1.15)";
+      setTimeout(function () { chips[idx].style.transform = ""; }, 160);
+    }
+  }
+
+  function renderChips() {
+    LISTS.forEach(function (L) {
+      var sec = el.listSteps.querySelector('[data-key="' + L.key + '"]');
+      var arr = state[L.key];
+      sec.querySelector("[data-count]").textContent = arr.length ? arr.length + " added" : "";
+      sec.querySelector("[data-empty]").hidden = arr.length > 0;
+      sec.querySelector("[data-chips]").innerHTML = arr.map(function (h, i) {
+        return '<span class="chip">' +
+                 '<span class="sw" style="background:' + h + '"></span>' +
+                 '<span class="nm">' + esc(colorName(oklch(h))) + '</span>' +
+                 '<button type="button" class="x" data-del="' + i + '" aria-label="Remove">×</button>' +
+               '</span>';
+      }).join("");
+    });
+  }
+
+  function renderSkin() {
+    el.skin.value = state.skin;
+    el.skinHex.value = state.skin;
+    el.skinToggle.setAttribute("aria-pressed", String(state.skinOn));
+    el.skinToggleLabel.textContent = state.skinOn ? "Using skin tone" : "Skin tone excluded";
+    el.skinBody.classList.toggle("off", !state.skinOn);
+    // The picker stays visible when off so the color isn't lost, but it can't
+    // be edited — that would imply it still affects the results.
+    el.skin.disabled = el.skinHex.disabled = !state.skinOn;
+    el.skinPresets.querySelectorAll("button").forEach(function (b) { b.disabled = !state.skinOn; });
+
+    if (!state.skinOn) {
+      el.skinRead.textContent = "Outfits are judged on the clothes alone.";
+      return;
+    }
+    var p = skinProfile(state.skin);
+    el.skinRead.textContent = p.depth.charAt(0).toUpperCase() + p.depth.slice(1) +
+                              " depth · " + p.undertone + " undertone";
+  }
+
+  function renderGender() {
+    el.genderSeg.querySelectorAll("button").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.v === state.gender));
+    });
+  }
+
+  function syncSubmit() {
+    var n = state.shirts.length * state.bottoms.length * state.shoes.length;
+    el.submitBtn.disabled = n === 0;
+    el.submitBtn.textContent = n === 0
+      ? "Add a shirt, a bottom and a shoe"
+      : "Generate " + n.toLocaleString() + " outfit" + (n === 1 ? "" : "s");
+  }
+
+  /* ── skin controls ── */
+  SKIN_PRESETS.forEach(function (p) {
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "preset-dot"; b.style.background = p; b.title = p;
+    b.addEventListener("click", function () { state.skin = p; renderSkin(); save(); });
+    el.skinPresets.appendChild(b);
+  });
+  el.skin.addEventListener("input", function () {
+    state.skin = el.skin.value.toUpperCase(); renderSkin(); save();
+  });
+  el.skinHex.addEventListener("change", function () {
+    var v = normalizeHex(el.skinHex.value);
+    if (v) { state.skin = v; save(); }
+    renderSkin();
+  });
+  el.skinToggle.addEventListener("click", function () {
+    state.skinOn = !state.skinOn;
+    renderSkin(); save();
+    // Every score changes, so re-run rather than leave stale numbers on screen.
+    if (results.length) generate();
+  });
+  el.genderSeg.addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-v]");
+    if (!b) return;
+    state.gender = b.dataset.v; renderGender(); save();
+    if (results.length) paint();
+  });
+
+  /* ══════════════════════════════════════════════════════════
+     7. GENERATE + RENDER RESULTS
+     ══════════════════════════════════════════════════════════ */
+  var results = [];
+  var PAGE = 12;
+
+  /* outfits are grouped into these buckets, best first */
+  var CATS = [
+    { key: "great", label: "Great matches", dot: "var(--good)", min: 75,
+      sub: "Strong contrast against your skin tone and colors that agree with each other — wear these with confidence.",
+      subOff: "Colors that agree with each other — wear these with confidence." },
+    { key: "good", label: "Wearable", dot: "var(--ok)", min: 58,
+      sub: "Nothing wrong here, just less striking. Fine for everyday.",
+      subOff: "Nothing wrong here, just less striking. Fine for everyday." },
+    { key: "meh", label: "Skip these", dot: "var(--bad)", min: -Infinity,
+      sub: "Muddy against your skin, or the colors fight each other.",
+      subOff: "These colors fight each other." }
+  ];
+  var shownPer = {};
+
+  function catOf(score) {
+    for (var i = 0; i < CATS.length; i++) if (score >= CATS[i].min) return CATS[i].key;
+    return "meh";
+  }
+
+  el.panel.addEventListener("submit", function (e) {
+    e.preventDefault();
+    generate();
+  });
+
+  function generate() {
+    var skin = state.skinOn ? skinProfile(state.skin) : null;
+    var S = state.shirts.map(oklch);
+    var B = state.bottoms.map(oklch);
+    var H = state.shoes.map(oklch);
+    results = [];
+    for (var i = 0; i < S.length; i++) {
+      for (var j = 0; j < B.length; j++) {
+        for (var k = 0; k < H.length; k++) {
+          var r = scoreCombo(S[i], B[j], H[k], skin, state.gender);
+          results.push({
+            shirt: S[i].hex, bottom: B[j].hex, shoe: H[k].hex,
+            score: r.score, tags: r.tags
+          });
+        }
+      }
+    }
+    results.sort(function (a, b) { return b.score - a.score; });
+    shownPer = { great: PAGE, good: PAGE, meh: PAGE };
+    paint();
+    if (window.matchMedia("(max-width: 900px)").matches) {
+      el.results.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
+  function bucket(key) {
+    return results.filter(function (r) { return catOf(r.score) === key; });
+  }
+
+  function paint() {
+    el.placeholder.hidden = results.length > 0;
+
+    if (!results.length) {
+      el.results.innerHTML = "";
+      el.countPill.textContent = "not generated yet";
+      return;
+    }
+
+    el.results.innerHTML = CATS.map(function (c) {
+      var list = bucket(c.key);
+      var n = Math.min(shownPer[c.key], list.length);
+      var left = list.length - n;
+      return '' +
+        '<section class="cat" data-cat="' + c.key + '">' +
+          '<div class="cat-head">' +
+            '<span class="cat-dot" style="background:' + c.dot + '"></span>' +
+            '<h3>' + c.label + '</h3>' +
+            '<span class="cat-n">' + list.length + '</span>' +
+          '</div>' +
+          (list.length
+            ? '<p class="cat-sub">' + (state.skinOn ? c.sub : c.subOff) + '</p>' +
+              '<div class="grid">' + list.slice(0, n).map(card).join("") + '</div>' +
+              (left > 0
+                ? '<div class="cat-more"><button type="button" class="btn-ghost" data-more="' +
+                  c.key + '">Show ' + Math.min(left, PAGE) + ' more (' + left + ' left)</button></div>'
+                : "")
+            : '<p class="cat-empty">Nothing landed in this group.</p>') +
+        '</section>';
+    }).join("");
+
+    var great = bucket("great").length;
+    el.countPill.textContent =
+      results.length.toLocaleString() + " combos · " + great + " great";
+  }
+
+  function card(r) {
+    return '' +
+      '<article class="combo">' +
+        '<div class="combo-fig">' +
+          figure(state.skinOn ? state.skin : MANNEQUIN, r.shirt, r.bottom, r.shoe, state.gender) +
+        '</div>' +
+        '<div class="combo-body">' +
+          '<div class="score-row">' +
+            '<span class="score">' + r.score + '</span>' +
+            '<span class="score-of">/ 100</span>' +
+          '</div>' +
+          '<div class="swrow">' +
+            swline("Shirt", r.shirt) + swline("Bottom", r.bottom) + swline("Shoes", r.shoe) +
+          '</div>' +
+          '<div class="tags">' +
+            r.tags.map(function (t) {
+              return '<span class="tag' + (t.neg ? " neg" : "") + '">' + esc(t.t) + '</span>';
+            }).join("") +
+          '</div>' +
+        '</div>' +
+      '</article>';
+  }
+
+  function swline(role, hex) {
+    return '<div class="swline">' +
+             '<span class="role">' + role + '</span>' +
+             '<span class="sw" style="background:' + hex + '"></span>' +
+             '<span class="nm">' + esc(colorName(oklch(hex))) + ' <span style="color:var(--muted)">' + hex + '</span></span>' +
+           '</div>';
+  }
+
+  /* "show more" inside a category — appends, never re-renders what's on screen */
+  el.results.addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-more]");
+    if (!b) return;
+    var key = b.dataset.more;
+    var list = bucket(key);
+    var from = shownPer[key];
+    shownPer[key] = Math.min(from + PAGE, list.length);
+    var sec = el.results.querySelector('section[data-cat="' + key + '"]');
+    sec.querySelector(".grid").insertAdjacentHTML(
+      "beforeend", list.slice(from, shownPer[key]).map(card).join("")
+    );
+    var left = list.length - shownPer[key];
+    if (left > 0) b.textContent = "Show " + Math.min(left, PAGE) + " more (" + left + " left)";
+    else b.parentNode.remove();
+  });
+
+  el.resetBtn.addEventListener("click", function () {
+    if (!confirm("Clear your skin tone, gender and every saved color?")) return;
+    state = { skin: "#C68642", skinOn: true, gender: "unspecified",
+              shirts: [], bottoms: [], shoes: [] };
+    clearStore();
+    results = [];
+    renderSkin(); renderGender(); renderChips(); syncSubmit(); paint();
+    save();
+  });
+
+  /* ══════════════════════════════════════════════════════════
+     MOVE BETWEEN MACHINES — copy / restore the setup as JSON
+     ══════════════════════════════════════════════════════════ */
+  var tBox   = document.getElementById("transferBox"),
+      tText  = document.getElementById("transferText"),
+      tLabel = document.getElementById("transferLabel"),
+      tMsg   = document.getElementById("transferMsg"),
+      applyJsonBtn = document.getElementById("applyJsonBtn");
+
+  function exportJSON() {
+    return JSON.stringify({
+      skin: state.skin, skinOn: state.skinOn, gender: state.gender,
+      shirts: state.shirts, bottoms: state.bottoms, shoes: state.shoes
+    }, null, 2);
+  }
+
+  // navigator.clipboard needs a secure context, which file:// is not,
+  // so fall back to execCommand and finally to "here it is, copy it yourself".
+  function copyText(str, done) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(str).then(function () { done(true); },
+                                             function () { done(legacyCopy(str)); });
+      return;
+    }
+    done(legacyCopy(str));
+  }
+  function legacyCopy(str) {
+    var ta = document.createElement("textarea");
+    ta.value = str;
+    ta.setAttribute("readonly", "");
+    ta.style.cssText = "position:fixed;top:0;left:0;opacity:0";
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  function showBox(mode) {
+    tBox.hidden = false;
+    tMsg.textContent = "";
+    tMsg.className = "";
+    applyJsonBtn.hidden = (mode === "copy");
+    tText.readOnly = (mode === "copy");
+  }
+
+  document.getElementById("copyBtn").addEventListener("click", function () {
+    var json = exportJSON();
+    copyText(json, function (ok) {
+      showBox("copy");
+      tLabel.textContent = ok
+        ? "Copied to your clipboard — paste it into this box on the other machine."
+        : "Your browser blocked the clipboard. Select the text below and copy it manually.";
+      tText.value = json;
+      if (!ok) { tText.focus(); tText.select(); }
+      tMsg.textContent = ok ? "Copied" : "";
+      tMsg.className = ok ? "ok" : "";
+    });
+  });
+
+  document.getElementById("restoreBtn").addEventListener("click", function () {
+    showBox("paste");
+    tLabel.textContent = "Paste the JSON you copied from your other machine:";
+    tText.value = "";
+    tText.focus();
+  });
+
+  document.getElementById("closeJsonBtn").addEventListener("click", function () {
+    tBox.hidden = true;
+  });
+
+  applyJsonBtn.addEventListener("click", function () {
+    var raw = tText.value.trim();
+    if (!raw) { tMsg.textContent = "Nothing pasted yet"; tMsg.className = "bad"; return; }
+    var d;
+    try { d = JSON.parse(raw); }
+    catch (e) { tMsg.textContent = "That isn't valid JSON"; tMsg.className = "bad"; return; }
+    var before = { skin: state.skin, skinOn: state.skinOn, gender: state.gender,
+                   shirts: state.shirts, bottoms: state.bottoms, shoes: state.shoes };
+    if (!adopt(d)) {
+      state.skin = before.skin; state.skinOn = before.skinOn; state.gender = before.gender;
+      state.shirts = before.shirts; state.bottoms = before.bottoms; state.shoes = before.shoes;
+      tMsg.textContent = "No usable colors in there";
+      tMsg.className = "bad";
+      return;
+    }
+    results = [];
+    renderSkin(); renderGender(); renderChips(); syncSubmit(); paint();
+    save();
+    tMsg.textContent = "Restored " +
+      (state.shirts.length + state.bottoms.length + state.shoes.length) + " colors";
+    tMsg.className = "ok";
+  });
+
+  /* ── boot ── */
+  load();
+  buildSteps();
+  renderSkin();
+  renderGender();
+  renderChips();
+  syncSubmit();
+})();
+</script>
+</body>
+</html>
