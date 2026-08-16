@@ -299,8 +299,8 @@
         </div>
         <div class="skin-body" id="skinBody">
           <div class="picker-row">
-            <input type="color" id="skin" value="#C68642" aria-label="Skin tone color picker">
-            <input type="text" class="hexbox" id="skinHex" value="#C68642" maxlength="7" spellcheck="false" aria-label="Skin tone hex value">
+            <input type="color" id="skin" value="#FFD2B6" aria-label="Skin tone color picker">
+            <input type="text" class="hexbox" id="skinHex" value="#FFD2B6" maxlength="7" spellcheck="false" aria-label="Skin tone hex value">
           </div>
           <div class="presets" id="skinPresets">
             <span class="preset-label">Quick picks</span>
@@ -311,9 +311,9 @@
         <label class="field" for="genderSeg" style="margin-top:1rem">Gender <span style="opacity:.7">— sets the preview figure &amp; fit rules</span></label>
         <div class="seg" id="genderSeg">
           <button type="button" data-v="female" aria-pressed="false">Female</button>
-          <button type="button" data-v="male" aria-pressed="false">Male</button>
+          <button type="button" data-v="male" aria-pressed="true">Male</button>
           <button type="button" data-v="nonbinary" aria-pressed="false">Non-binary</button>
-          <button type="button" data-v="unspecified" aria-pressed="true">Rather not say</button>
+          <button type="button" data-v="unspecified" aria-pressed="false">Rather not say</button>
         </div>
       </section>
 
@@ -428,14 +428,21 @@
   /* ══════════════════════════════════════════════════════════
      2. STATE
      ══════════════════════════════════════════════════════════ */
-  var state = {
-    skin: "#C68642",
-    skinOn: true,          // false → skin tone is ignored by the scorer entirely
-    gender: "unspecified",
-    shirts: [],
-    bottoms: [],
-    shoes: []
-  };
+  // Starting wardrobe for a first-time visitor (and the target of "Reset").
+  // Anything saved in cookies/localStorage overrides this on load.
+  function defaultState() {
+    return {
+      skin: "#FFD2B6",
+      skinOn: true,        // false → skin tone is ignored by the scorer entirely
+      gender: "male",
+      shirts: ["#111111", "#8FC4E8", "#6B3FA0", "#A98360",
+               "#6F9F77", "#AADAB2", "#1B2A4A", "#2373C7"],
+      bottoms: ["#111111", "#15304C", "#E0D3BC"],
+      shoes: ["#111111"]
+    };
+  }
+
+  var state = defaultState();
 
   // Shown in the preview when skin tone is excluded, so the figure reads as a
   // mannequin rather than as somebody with grey skin.
@@ -1053,9 +1060,8 @@
   });
 
   el.resetBtn.addEventListener("click", function () {
-    if (!confirm("Clear your skin tone, gender and every saved color?")) return;
-    state = { skin: "#C68642", skinOn: true, gender: "unspecified",
-              shirts: [], bottoms: [], shoes: [] };
+    if (!confirm("Discard your changes and go back to the starting wardrobe?")) return;
+    state = defaultState();
     clearStore();
     results = [];
     renderSkin(); renderGender(); renderChips(); syncSubmit(); paint();
